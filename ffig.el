@@ -18,9 +18,11 @@
 
 (defun ffig-ls-files (repo)
   "List the files in a git repository"
-  (split-string (shell-command-to-string
-                 (format "git --git-dir=%s ls-files -z" repo))
-                "\0" t))
+  (let ((toplevel (file-name-directory repo)))
+    (mapcar (lambda(file) (concat toplevel file))
+            (split-string (shell-command-to-string
+                           (format "git --git-dir=%s ls-files -z" repo))
+                          "\0" t))))
 
 (defun ffig-filenames (files)
   "Return an alist of (filename . file-path) from a list of file-paths."
