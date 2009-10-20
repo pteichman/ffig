@@ -19,7 +19,7 @@ With a prefix argument, prompt for the git repository to search."
   "Find the git repository associated with FILE"
   (let ((git-dir ".git"))
     (expand-file-name
-     (concat (locate-dominating-file file git-dir) git-dir))))
+     (concat (ffig-locate-dominating-file file git-dir) git-dir))))
 
 (defun ffig-ls-files (repo)
   "List the files in a git repository"
@@ -46,5 +46,15 @@ Each element looks like:
   (if (file-directory-p file)
       (file-name-as-directory file)
     file))
+
+; backport locate-dominating-file to emacs pre-23
+(if (functionp 'locate-dominating-file)
+    (defalias 'ffig-locate-dominating-file 'locate-dominating-file)
+  (defun ffig-locate-dominating-file (file name)
+    "Look up the dominating NAME in and above FILE."
+    (let ((parent (file-truename (expand-file-name ".." file))))
+      (cond ((string= file parent) nil)
+            ((file-exists-p (concat file name)) file)
+            (t (ffig-locate-dominating-file parent name))))))
 
 (provide 'ffig)
