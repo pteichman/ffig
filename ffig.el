@@ -7,13 +7,24 @@
 
 With a prefix argument, prompt for the git repository to search."
   (interactive "P")
-  (let* ((default-repo (ffig-git-repository (buffer-file-name)))
-         (repo-path (if (or prompt-for-repo (not default-repo))
-                        (expand-file-name (read-file-name "Git repository: "))
-                      default-repo))
+  (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
          (repo-files (ffig-repo-files (ffig-file-maybe-directory repo-path)))
          (file (completing-read "Find repo file: " (mapcar 'car repo-files))))
     (find-file (cdr (assoc file repo-files)))))
+
+(defun ffig-grep (prompt-for-repo)
+  (interactive "P")
+  (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
+         (command (read-shell-command
+                   "Run git-grep (like this): "
+                   (format "git --no-pager --git-dir=%s grep -n " repo-path))))
+    (grep command)))
+
+(defun ffig-get-default-repository (prompt-for-repo)
+  (let ((default-repo (ffig-git-repository (buffer-file-name))))
+    (if (or prompt-for-repo (not default-repo))
+        (expand-file-name (read-file-name "Git repository: "))
+      default-repo)))
 
 (defun ffig-git-repository (file)
   "Find the git repository associated with FILE"
