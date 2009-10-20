@@ -7,19 +7,20 @@
 
 With a prefix argument, prompt for the git repository to search."
   (interactive "P")
-  (let* ((repo-file-name (if prompt-for-repo
-                             (expand-file-name (read-file-name "Git repository: "))
-                           (buffer-file-name)))
-         (repo-files (ffig-repo-files (ffig-file-maybe-directory repo-file-name)))
-         (file (completing-read "Find repo file: "
-                     (mapcar 'car repo-files))))
+  (let* ((default-repo (ffig-git-repository (buffer-file-name)))
+         (repo-path (if (or prompt-for-repo (not default-repo))
+                        (expand-file-name (read-file-name "Git repository: "))
+                      default-repo))
+         (repo-files (ffig-repo-files (ffig-file-maybe-directory repo-path)))
+         (file (completing-read "Find repo file: " (mapcar 'car repo-files))))
     (find-file (cdr (assoc file repo-files)))))
 
 (defun ffig-git-repository (file)
   "Find the git repository associated with FILE"
-  (let ((git-dir ".git"))
-    (expand-file-name
-     (concat (ffig-locate-dominating-file file git-dir) git-dir))))
+  (when file
+    (let ((git-dir ".git"))
+      (expand-file-name
+       (concat (ffig-locate-dominating-file file git-dir) git-dir)))))
 
 (defun ffig-ls-files (repo)
   "List the files in a git repository"
