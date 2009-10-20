@@ -25,7 +25,7 @@ With a prefix argument, prompt for the git repository to search."
 (defun ffig-get-default-repository (prompt-for-repo)
   (let ((default-repo (ffig-git-repository (buffer-file-name))))
     (if (or prompt-for-repo (not default-repo))
-        (expand-file-name (read-file-name "Git repository: "))
+        (ffig-git-repository (read-file-name "Git repository: "))
       default-repo)))
 
 (defun ffig-git-repository (file)
@@ -33,7 +33,9 @@ With a prefix argument, prompt for the git repository to search."
   (when file
     (let ((git-dir ".git"))
       (expand-file-name
-       (concat (ffig-locate-dominating-file file git-dir) git-dir)))))
+       (concat (ffig-locate-dominating-file
+                (ffig-file-maybe-directory file) git-dir)
+               git-dir)))))
 
 (defun ffig-ls-files (repo)
   "List the files in a git repository"
