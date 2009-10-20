@@ -2,10 +2,15 @@
 
 ;; Copyright (C) 2009 Peter Teichman
 
-(defun ffig ()
-  "Find a file in the same repository as the current buffer's file"
-  (interactive)
-  (let* ((repo-files (ffig-repo-files (buffer-file-name)))
+(defun ffig (prompt-for-repo)
+  "Find a file in the same repository as the current buffer's file.
+
+With a prefix argument, prompt for the git repository to search."
+  (interactive "P")
+  (let* ((repo-file-name (if prompt-for-repo
+                             (expand-file-name (read-file-name "Git repository: "))
+                           (buffer-file-name)))
+         (repo-files (ffig-repo-files (ffig-file-maybe-directory repo-file-name)))
          (file (completing-read "Find repo file: "
                      (mapcar 'car repo-files))))
     (find-file (cdr (assoc file repo-files)))))
@@ -36,5 +41,10 @@
 Each element looks like:
 (unique-filename . path-to-file)"
   (ffig-filenames (ffig-ls-files (ffig-git-repository file))))
+
+(defun ffig-file-maybe-directory (file)
+  (if (file-directory-p file)
+      (file-name-as-directory file)
+    file))
 
 (provide 'ffig)
