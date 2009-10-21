@@ -53,16 +53,77 @@ With a prefix argument, prompt for the git repository to search."
 
 (defun ffig-filenames (files)
   "Return an alist of (filename . file-path) from a list of file-paths."
-  (mapcar (lambda(file) (let ((parts (split-string file "/")))
-                          (cons (car (last parts)) file)))
+  (mapcar (lambda(file) (cons (file-name-nondirectory file) file))
           files))
+
+(defun ffig-split-paths (paths)
+  (mapcar (lambda(path)
+            (reverse (split-string path "/" t)))
+          paths))
+
+(defun ffig-uniquify-file (file)
+  "(basename file1 file2 file3)
+    => ((basename<file1> . file1) (basename<file2> . file2))"
+  (if (caddr file)
+      (let* ((paths (cdr file))
+             (split-paths (ffig-remove-common-prefix (ffig-split-paths paths)))
+             (ret nil))
+        (while paths
+          (add-to-list 'ret (cons (format "%s<%s>" (car file) (caar split-paths)) (car paths)))
+          (setq paths (cdr paths))
+          (setq split-paths (cdr split-paths)))
+        ret)
+    (list (cons (car file) (cadr file)))))
+
+(defun ffig-uniquify (files)
+  "((basename . file1) (basename . file2))
+    => ((basename<file1> . file1) (basename<file2> . file2))"
+  (let ((alist (ffig-collapse-alist files))
+        (ret nil))
+    (mapcar (lambda (cur)
+              (mapcar (lambda(file)
+                        (add-to-list 'ret file))
+                      (ffig-uniquify-file cur)))
+            alist)
+    ret))
+
+(defun ffig-collapse-alist (alist)
+"((basename . file1) (basename . file2)) => (basename file file2)"
+  (let ((cur alist)
+        (hash (make-hash-table :test 'equal))
+        (ret nil))
+    (while cur
+      (let* ((elt (car cur))
+             (basename (car elt))
+             (filename (cdr elt)))
+        (puthash basename (cons filename (gethash basename hash '())) hash))
+      (setq cur (cdr cur)))
+    ; put the alist back together
+    (maphash (lambda (key value)
+               (setq ret (cons (append (list key) value) ret))) hash)
+    ret))
+
+(defun ffig-cars-equal (lists)
+  (let ((cars (mapcar 'car lists))
+        (ret t))
+    (while (cdr cars)
+      (if (not (equal (car cars) (cadr cars)))
+          (setq ret nil))
+      (setq cars (cdr cars)))
+    ret))
+
+(defun ffig-remove-common-prefix (lists)
+  (let ((ret lists))
+    (while (ffig-cars-equal ret)
+      (setq ret (mapcar 'cdr ret)))
+    ret))
 
 (defun ffig-repo-files (file)
   "Create an alist of files in the git repository for FILE.
 
 Each element looks like:
 (unique-filename . path-to-file)"
-  (ffig-filenames (ffig-ls-files (ffig-git-repository file))))
+  (ffig-uniquify (ffig-filenames (ffig-ls-files (ffig-git-repository file)))))
 
 (defun ffig-file-maybe-directory (file)
   (if (file-directory-p file)
