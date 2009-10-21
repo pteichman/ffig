@@ -16,6 +16,9 @@ With a prefix argument, prompt for the git repository to search."
     (find-file (cdr (assoc file repo-files)))))
 
 (defun ffig-grep (prompt-for-repo)
+  "Run M-x grep over a git repository.
+
+With a prefix argument, prompt for the git repository to search."
   (interactive "P")
   (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
          (command (read-shell-command
