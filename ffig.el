@@ -9,7 +9,10 @@ With a prefix argument, prompt for the git repository to search."
   (interactive "P")
   (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
          (repo-files (ffig-repo-files (ffig-file-maybe-directory repo-path)))
-         (file (completing-read "Find repo file: " (mapcar 'car repo-files))))
+         (read (if (and (boundp 'ido-mode) ido-mode)
+                   'ido-completing-read
+                 'completing-read))
+         (file (funcall read "Find repo file: " (mapcar 'car repo-files))))
     (find-file (cdr (assoc file repo-files)))))
 
 (defun ffig-grep (prompt-for-repo)
