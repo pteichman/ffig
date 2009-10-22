@@ -23,7 +23,7 @@ With a prefix argument, prompt for the git repository to search."
   (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
          (command (read-shell-command
                    "Run git-grep (like this): "
-                   (format "git --no-pager --git-dir=%s --work-dir=%s grep -n "
+                   (format "git --no-pager --git-dir=%s --work-tree=%s grep -n "
                            repo-path
                            (file-name-directory repo-path)))))
     (grep command)))
