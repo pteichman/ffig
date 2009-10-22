@@ -1,0 +1,12 @@
+Load ffig.el:
+(require 'ffig)
+
+This gives you an interactive command, M-x ffig. It works like M-x
+find-file, but autocompletes to all the files in your current git
+repository.
+
+Prefix it with C-u if you want to find a file in a different git
+repository.
+
+Identical filenames are made unique by appending the deepest unique
+portion of their path.
