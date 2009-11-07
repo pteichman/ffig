@@ -10,3 +10,6 @@ repository.
 
 Identical filenames are made unique by appending the deepest unique
 portion of their path.
+
+Recommended keybinding:
+(global-set-key (kbd "C-x C-M-f") 'ffig)
