@@ -12,8 +12,11 @@ With a prefix argument, prompt for the git repository to search."
          (read (if (and (boundp 'ido-mode) ido-mode)
                    'ido-completing-read
                  'completing-read))
-         (file (funcall read "Find repo file: " (mapcar 'car repo-files))))
-    (find-file (cdr (assoc file repo-files)))))
+         (file (funcall read "Find repo file: " (mapcar 'car repo-files)))
+         (path (cdr (assoc file repo-files))))
+    (if path
+        (find-file path)
+      (message "File not found in git repository: %s" file))))
 
 (defun ffig-grep (prompt-for-repo)
   "Run M-x grep over a git repository.
