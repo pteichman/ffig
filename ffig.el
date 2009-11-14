@@ -1,6 +1,49 @@
 ;;; ffig.el --- Find files in a git repository quickly.
 
 ;; Copyright (C) 2009 Peter Teichman
+;;
+;; Permission is hereby granted, free of charge, to any person
+;; obtaining a copy of this software and associated documentation
+;; files (the "Software"), to deal in the Software without
+;; restriction, including without limitation the rights to use, copy,
+;; modify, merge, publish, distribute, sublicense, and/or sell copies
+;; of the Software, and to permit persons to whom the Software is
+;; furnished to do so, subject to the following conditions:
+;;
+;; The above copyright notice and this permission notice shall be
+;; included in all copies or substantial portions of the Software.
+;;
+;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+;; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+;; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+;; SOFTWARE.
+
+;; Author: Peter Teichman <peter@teichman.org>
+;; Version: 1.0
+;; Keywords: files
+
+;;; Commentary:
+;;;
+;;; (require 'ffig)
+;;;
+;;; This gives you an interactive command, M-x ffig. It works like M-x
+;;; find-file, but autocompletes to all the files in your current git
+;;; repository.
+;;;
+;;; Prefix it with C-u if you want to find a file in a different git
+;;; repository.
+;;;
+;;; Identical filenames are made unique by appending the deepest unique
+;;; portion of their path.
+;;;
+;;; Recommended keybinding:
+;;;   (global-set-key (kbd "C-x C-M-f") 'ffig)
+
+;;; Code:
 
 (defun ffig (prompt-for-repo)
   "Find a file in the same repository as the current buffer's file.
@@ -144,3 +187,5 @@ Each element looks like:
             (t (ffig-locate-dominating-file parent name))))))
 
 (provide 'ffig)
+
+;;; ffig.el ends here
