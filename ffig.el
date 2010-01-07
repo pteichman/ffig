@@ -23,7 +23,7 @@
 ;; SOFTWARE.
 
 ;; Author: Peter Teichman <peter@teichman.org>
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: files
 
 ;;; Commentary:
@@ -44,6 +44,15 @@
 ;;;   (global-set-key (kbd "C-x C-M-f") 'ffig)
 
 ;;; Code:
+
+(defgroup ffig nil
+  "Find files in a git repository quickly.")
+
+(defcustom ffig-git-path "git"
+  "Path to your git executable. This doesn't need customization if
+it's in your PATH."
+  :group 'ffig
+  :type 'string)
 
 (defun ffig (prompt-for-repo)
   "Find a file in the same repository as the current buffer's file.
@@ -69,7 +78,8 @@ With a prefix argument, prompt for the git repository to search."
   (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
          (command (read-shell-command
                    "Run git-grep (like this): "
-                   (format "git --no-pager --git-dir=%s --work-tree=%s grep -n "
+                   (format "%s --no-pager --git-dir=%s --work-tree=%s grep -n "
+                           ffig-git-path
                            repo-path
                            (file-name-directory repo-path)))))
     (grep command)))
@@ -94,7 +104,8 @@ With a prefix argument, prompt for the git repository to search."
   (let ((toplevel (file-name-directory repo)))
     (mapcar (lambda(file) (concat toplevel file))
             (split-string (shell-command-to-string
-                           (format "git --git-dir=%s ls-files -z" repo))
+                           (format "%s --git-dir=%s ls-files -z"
+                                   ffig-git-path repo))
                           "\0" t))))
 
 (defun ffig-filenames (files)
