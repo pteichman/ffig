@@ -96,7 +96,7 @@ With a prefix argument, prompt for the git repository to search."
     (let ((git-dir ".git"))
       (expand-file-name
        (concat (ffig-locate-dominating-file
-                (ffig-file-maybe-directory file) git-dir)
+                (ffig-file-maybe-directory file) git-dir) "/"
                git-dir)))))
 
 (defun ffig-ls-files (repo)
@@ -194,7 +194,7 @@ Each element looks like:
     "Look up the dominating NAME in and above FILE."
     (let ((parent (file-truename (expand-file-name ".." file))))
       (cond ((string= file parent) nil)
-            ((file-exists-p (concat file name)) file)
+            ((file-exists-p (concat file "/" name)) file)
             (t (ffig-locate-dominating-file parent name))))))
 
 (provide 'ffig)
