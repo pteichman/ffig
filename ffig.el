@@ -104,7 +104,7 @@ With a prefix argument, prompt for the git repository to search."
   (let ((toplevel (file-name-directory repo)))
     (mapcar (lambda(file) (concat toplevel file))
             (split-string (shell-command-to-string
-                           (format "%s --git-dir=%s ls-files -z |sort -u -z"
+                           (format "%s --git-dir=%s ls-files -z"
                                    ffig-git-path repo))
                           "\0" t))))
 
