@@ -70,20 +70,6 @@ With a prefix argument, prompt for the git repository to search."
         (find-file path)
       (message "File not found in git repository: %s" file))))
 
-(defun ffig-grep (prompt-for-repo)
-  "Run M-x grep over a git repository.
-
-With a prefix argument, prompt for the git repository to search."
-  (interactive "P")
-  (let* ((repo-path (ffig-get-default-repository prompt-for-repo))
-         (command (read-shell-command
-                   "Run git-grep (like this): "
-                   (format "%s --no-pager --git-dir=%s --work-tree=%s grep -n "
-                           ffig-git-path
-                           repo-path
-                           (file-name-directory repo-path)))))
-    (grep command)))
-
 (defun ffig-get-default-repository (prompt-for-repo)
   (let ((default-repo (ffig-git-repository (buffer-file-name))))
     (if (or prompt-for-repo (not default-repo))
