@@ -1,6 +1,6 @@
 ;;; ffig.el --- Find files in a git repository quickly.
 
-;; Copyright (C) 2009 Peter Teichman
+;; Copyright (C) 2012 Peter Teichman
 ;;
 ;; Permission is hereby granted, free of charge, to any person
 ;; obtaining a copy of this software and associated documentation
@@ -23,7 +23,7 @@
 ;; SOFTWARE.
 
 ;; Author: Peter Teichman <peter@teichman.org>
-;; Version: 1.1
+;; Version: 1.2.0
 ;; Keywords: files
 
 ;;; Commentary:
