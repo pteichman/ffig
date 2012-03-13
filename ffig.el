@@ -153,8 +153,10 @@ With a prefix argument, prompt for the git repository to search."
       (let* ((elt (car cur))
              (basename (car elt))
              (filename (cdr elt)))
-        (puthash basename (cons filename (gethash basename hash '())) hash))
-      (setq cur (cdr cur)))
+        (let* ((filelist (gethash basename hash '())))
+          (add-to-list 'filelist filename)
+          (puthash basename filelist hash))
+      (setq cur (cdr cur))))
     ; put the alist back together
     (maphash (lambda (key value)
                (setq ret (cons (append (list key) value) ret))) hash)
