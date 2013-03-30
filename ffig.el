@@ -1,6 +1,6 @@
 ;;; ffig.el --- Find files in a git repository quickly.
 
-;; Copyright (C) 2012 Peter Teichman
+;; Copyright (C) 2013 Peter Teichman
 ;;
 ;; Permission is hereby granted, free of charge, to any person
 ;; obtaining a copy of this software and associated documentation
@@ -23,7 +23,7 @@
 ;; SOFTWARE.
 
 ;; Author: Peter Teichman <peter@teichman.org>
-;; Version: 1.2.0
+;; Version: 1.2.1
 ;; Keywords: files
 
 ;;; Commentary:
@@ -46,7 +46,8 @@
 ;;; Code:
 
 (defgroup ffig nil
-  "Find files in a git repository quickly.")
+  "Find files in a git repository quickly."
+  :group 'files)
 
 (defcustom ffig-git-path "git"
   "Path to your git executable. This doesn't need customization if
@@ -64,7 +65,7 @@ With a prefix argument, prompt for the git repository to search."
          (read (if (and (boundp 'ido-mode) ido-mode)
                    'ido-completing-read
                  'completing-read))
-         (file (funcall read "Find repo file: " (mapcar 'car repo-files)))
+         (file (funcall read "Find repo file: " (mapc 'car repo-files)))
          (path (cdr (assoc file repo-files))))
     (if path
         (find-file path)
@@ -107,7 +108,7 @@ With a prefix argument, prompt for the git repository to search."
 (defun ffig-uniquify-file (file)
   "(basename file1 file2 file3)
     => ((basename<file1> . file1) (basename<file2> . file2))"
-  (if (caddr file)
+  (if (cddr file)
       (let* ((paths (cdr file))
              (split-paths (ffig-remove-common-prefix (ffig-split-paths paths)))
              (ret nil))
@@ -123,8 +124,8 @@ With a prefix argument, prompt for the git repository to search."
     => ((basename<file1> . file1) (basename<file2> . file2))"
   (let ((alist (ffig-collapse-alist files))
         (ret nil))
-    (mapcar (lambda (cur)
-              (mapcar (lambda(file)
+    (mapc (lambda (cur)
+              (mapc (lambda(file)
                         (add-to-list 'ret file))
                       (ffig-uniquify-file cur)))
             alist)
