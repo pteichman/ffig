@@ -55,6 +55,7 @@ it's in your PATH."
   :group 'ffig
   :type 'string)
 
+;;;###autoload
 (defun ffig (prompt-for-repo)
   "Find a file in the same repository as the current buffer's file.
 
