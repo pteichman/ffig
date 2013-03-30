@@ -23,7 +23,7 @@
 ;; SOFTWARE.
 
 ;; Author: Peter Teichman <peter@teichman.org>
-;; Version: 1.2.1
+;; Version: 1.2.2
 ;; Keywords: files
 
 ;;; Commentary:
